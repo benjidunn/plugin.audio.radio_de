@@ -73,6 +73,8 @@ def show_root_menu():
                                 category_type='language')},
         {'label': _('search_for_station'),
          'path': plugin.url_for('search')},
+        {'label': _('add_custom'),
+         'path': plugin.url_for('custom_my_station', station_id='new')},
         {'label': _('my_stations'),
          'path': plugin.url_for('show_my_stations')},
     )
@@ -114,7 +116,7 @@ def search_result(search_string):
 @plugin.route('/stations/my/')
 def show_my_stations():
     stations = my_stations.values()
-    return __add_stations(stations, add_custom=True)
+    return __add_stations(stations)
 
 
 @plugin.route('/stations/my/custom/<station_id>')
@@ -186,7 +188,7 @@ def get_stream_url(station_id):
     return plugin.set_resolved_url(stream_url)
 
 
-def __add_stations(stations, add_custom=False):
+def __add_stations(stations):
     __log('__add_stations started with %d items' % len(stations))
     items = []
     my_station_ids = my_stations.keys()
@@ -227,11 +229,6 @@ def __add_stations(stations, add_custom=False):
                 station_id=station_id,
             ),
             'is_playable': True,
-        })
-    if add_custom:
-        items.append({
-            'label': _('add_custom'),
-            'path': plugin.url_for('custom_my_station', station_id='new'),
         })
     finish_kwargs = {
         'sort_methods': [
